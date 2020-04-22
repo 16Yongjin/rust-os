@@ -9,6 +9,7 @@ use core::panic::PanicInfo;
 
 pub mod interrunpts;
 
+pub mod gdt;
 pub mod serial;
 pub mod vga_buffer;
 
@@ -59,5 +60,6 @@ fn panic(info: &PanicInfo) -> ! {
 }
 
 pub fn init() {
+  gdt::init();
   interrunpts::init_idt();
 }

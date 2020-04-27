@@ -13,6 +13,13 @@ pub mod gdt;
 pub mod serial;
 pub mod vga_buffer;
 
+pub fn init() {
+  gdt::init();
+  interrunpts::init_idt();
+  unsafe { interrunpts::PICS.lock().initialize() };
+  x86_64::instructions::interrupts::enable(); 
+}
+
 pub fn test_runner(tests: &[&dyn Fn()]) {
   serial_println!("Running {} tests", tests.len());
   for test in tests {
@@ -57,9 +64,4 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
   test_panic_handler(info)
-}
-
-pub fn init() {
-  gdt::init();
-  interrunpts::init_idt();
 }
